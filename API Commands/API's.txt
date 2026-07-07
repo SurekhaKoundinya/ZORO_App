@@ -1,0 +1,1360 @@
+# ZORO Admin Backend APIs
+
+## Base URL
+
+```text
+http://localhost:8000
+```
+
+> Replace with your deployed/ngrok URL when not running locally.
+
+## Frontend Base URL Setup
+
+```js
+const API_BASE = "http://localhost:8000";
+```
+
+## Response Envelope
+
+Every endpoint returns this shape:
+
+```json
+{
+  "success": true,
+  "data": { },
+  "message": "OK"
+}
+```
+
+Errors look like:
+
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "statusCode": 400,
+  "errors": { }
+}
+```
+
+---
+
+# Auth
+
+## 1 — Admin Login
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/auth/login/
+```
+
+### Body
+```json
+{
+  "email": "admin@zoro.finance",
+  "password": "yourpassword"
+}
+```
+
+### Response
+```json
+{
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "b3f1c2a0-1234-4a5b-9c8d-abcdef123456",
+    "email": "admin@zoro.finance",
+    "name": "Admin User",
+    "role": "super_admin",
+    "avatar": "AU",
+    "kyc_level": 0
+  }
+}
+```
+
+---
+
+## 2 — Logout
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/auth/logout/
+```
+
+### Headers
+```text
+Authorization: Bearer <access_token>
+```
+
+### Body
+```json
+{ "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+### Response
+```json
+{ "success": true, "data": null, "message": "Logged out" }
+```
+
+---
+
+## 3 — Refresh Token
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/auth/refresh/
+```
+
+### Body
+```json
+{ "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+### Response
+```json
+{ "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+---
+
+## 4 — Get Current User
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/auth/me/
+```
+
+### Headers
+```text
+Authorization: Bearer <access_token>
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "id": "b3f1c2a0-1234-4a5b-9c8d-abcdef123456",
+    "email": "admin@zoro.finance",
+    "full_name": "Admin User",
+    "first_name": "Admin",
+    "last_name": "User",
+    "avatar": "AU",
+    "country": "India",
+    "phone": "+91XXXXXXXXXX",
+    "role": "super_admin",
+    "status": "active",
+    "kyc_level": 0,
+    "risk_score": 0,
+    "referral_code": "AB12CD34",
+    "date_joined": "2026-06-01T10:00:00Z",
+    "last_login_ip": "127.0.0.1",
+    "totp_enabled": false
+  },
+  "message": "OK"
+}
+```
+
+---
+
+## 5 — Update Current User
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/auth/me/
+```
+
+### Headers
+```text
+Authorization: Bearer <access_token>
+```
+
+### Body
+```json
+{ "first_name": "New", "last_name": "Name", "phone": "+91XXXXXXXXXX" }
+```
+
+---
+
+## 6 — 2FA Setup (Get QR)
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/auth/2fa/setup/
+```
+
+### Headers
+```text
+Authorization: Bearer <access_token>
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+    "secret": "JBSWY3DPEHPK3PXP"
+  },
+  "message": "OK"
+}
+```
+
+---
+
+## 7 — 2FA Setup (Confirm)
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/auth/2fa/setup/
+```
+
+### Body
+```json
+{ "totp_code": "123456" }
+```
+
+---
+
+## 8 — Change Password
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/auth/change-password/
+```
+
+### Body
+```json
+{
+  "current_password": "oldpass123",
+  "new_password": "newpass123",
+  "confirm_password": "newpass123"
+}
+```
+
+---
+
+## 9 — List API Keys
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/auth/api-keys/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Server integration",
+      "prefix": "zoro_live_ab12",
+      "permissions": "read",
+      "is_active": true,
+      "last_used": "2026-07-06T09:00:00Z",
+      "created_at": "2026-06-01T10:00:00Z",
+      "expires_at": null
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 10 — Create API Key
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/auth/api-keys/
+```
+
+### Body
+```json
+{ "name": "Server integration", "permissions": "read" }
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Server integration",
+    "prefix": "zoro_live_ab12",
+    "key": "zoro_live_ab12cd34ef56gh78ij90klmnop",
+    "permissions": "read"
+  },
+  "message": "API key created — save it now, it will not be shown again"
+}
+```
+
+---
+
+## 11 — Delete API Key
+
+**Method:** `DELETE`
+
+```text
+http://localhost:8000/api/v1/auth/api-keys/:id/
+```
+
+---
+
+# Users
+
+## 12 — List Users
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/users/?status=active&kyc_level=2
+```
+
+### Headers
+```text
+Authorization: Bearer <admin_token>
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "0f1e2d3c-4b5a-4321-8765-1234567890ab",
+      "email": "nithin@gmail.com",
+      "full_name": "Nithin Kumar",
+      "first_name": "Nithin",
+      "last_name": "Kumar",
+      "avatar": "NK",
+      "country": "India",
+      "phone": "8328169339",
+      "role": "user",
+      "status": "active",
+      "kyc_level": 2,
+      "risk_score": 12,
+      "referral_code": "NK8328XY",
+      "date_joined": "2026-05-10T08:00:00Z",
+      "last_login_ip": "103.21.244.10",
+      "wallet_balance": 452.30,
+      "transaction_count": 18,
+      "referral_count": 3
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 13 — Create User
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/users/
+```
+
+### Body
+```json
+{
+  "email": "newuser@gmail.com",
+  "first_name": "New",
+  "last_name": "User",
+  "country": "India",
+  "phone": "9876543210",
+  "role": "user",
+  "password": "temporarypass123"
+}
+```
+
+---
+
+## 14 — Get User Detail
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/users/:id/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "id": "0f1e2d3c-4b5a-4321-8765-1234567890ab",
+    "email": "nithin@gmail.com",
+    "full_name": "Nithin Kumar",
+    "avatar": "NK",
+    "country": "India",
+    "phone": "8328169339",
+    "role": "user",
+    "status": "active",
+    "kyc_level": 2,
+    "risk_score": 12,
+    "referral_code": "NK8328XY",
+    "date_joined": "2026-05-10T08:00:00Z",
+    "wallet_balance": 452.30,
+    "transaction_count": 18,
+    "referral_count": 3,
+    "totp_enabled": true
+  },
+  "message": "OK"
+}
+```
+
+---
+
+## 15 — Update User
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/users/:id/
+```
+
+---
+
+## 16 — Suspend User
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/users/:id/suspend/
+```
+
+### Response
+```json
+{ "success": true, "data": { "id": "...", "status": "suspended" }, "message": "User suspended" }
+```
+
+---
+
+## 17 — Reactivate User
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/users/:id/reactivate/
+```
+
+---
+
+## 18 — Approve KYC (from Users app)
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/users/:id/approve_kyc/
+```
+
+### Body
+```json
+{ "level": 2 }
+```
+
+---
+
+## 19 — Freeze User's Wallets
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/users/:id/freeze_wallet/
+```
+
+---
+
+## 20 — User Aggregate Stats
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/users/stats/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "totalUsers": 5230,
+    "activeUsers": 4890,
+    "suspendedUsers": 120,
+    "pendingKyc": 340,
+    "newThisMonth": 210
+  },
+  "message": "OK"
+}
+```
+
+---
+
+# KYC
+
+## 21 — List KYC Submissions
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/kyc/?status=pending
+```
+
+### Headers
+```text
+Authorization: Bearer <admin_token>
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "689d7f1a-b23d-9d00-12ab-3456abcdef01",
+      "user": "0f1e2d3c-4b5a-4321-8765-1234567890ab",
+      "user_name": "Nithin Kumar",
+      "user_email": "nithin@gmail.com",
+      "user_avatar": "NK",
+      "user_country": "India",
+      "risk_score": 12,
+      "level": 2,
+      "status": "pending",
+      "document_types": ["passport", "utility_bill", "selfie"],
+      "submitted_at": "2026-07-05T10:20:30Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 22 — Get Single KYC Submission
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/kyc/:kycId/
+```
+
+### Headers
+```text
+Authorization: Bearer <admin_token>
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "id": "689d7f1a-b23d-9d00-12ab-3456abcdef01",
+    "user": "0f1e2d3c-4b5a-4321-8765-1234567890ab",
+    "user_name": "Nithin Kumar",
+    "user_email": "nithin@gmail.com",
+    "user_avatar": "NK",
+    "user_country": "India",
+    "risk_score": 12,
+    "level": 2,
+    "status": "pending",
+    "notes": "",
+    "documents": [
+      { "id": "d1a2b3c4-...", "doc_type": "passport", "liveness_passed": null, "uploaded_at": "2026-07-05T10:20:31Z" },
+      { "id": "e5f6a7b8-...", "doc_type": "selfie", "liveness_passed": true, "uploaded_at": "2026-07-05T10:20:32Z" }
+    ],
+    "reviewer": null,
+    "reviewer_name": null,
+    "submitted_at": "2026-07-05T10:20:30Z",
+    "reviewed_at": null
+  },
+  "message": "OK"
+}
+```
+
+> Note: this backend stores documents as private S3 object keys (`file_key`), not public URLs. To get a viewable link for a specific document, use endpoint #25 below (presigned preview URL), rather than reading a URL field directly off this response.
+
+---
+
+## 23 — Approve KYC
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/kyc/:kycId/approve/
+```
+
+### Headers
+```text
+Authorization: Bearer <admin_token>
+```
+
+### Response
+```json
+{ "success": true, "data": { "id": "...", "status": "approved" }, "message": "KYC approved" }
+```
+
+---
+
+## 24 — Reject KYC
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/kyc/:kycId/reject/
+```
+
+### Headers
+```text
+Authorization: Bearer <admin_token>
+```
+
+### Body
+```json
+{ "reason": "Documents are unclear" }
+```
+
+### Response
+```json
+{ "success": true, "data": { "id": "...", "status": "rejected", "notes": "Documents are unclear" }, "message": "KYC rejected" }
+```
+
+---
+
+## 25 — Preview KYC Document (presigned URL)
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/kyc/documents/:documentId/preview/
+```
+
+### Headers
+```text
+Authorization: Bearer <admin_token>
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "url": "https://zoro-kyc-docs.s3.ap-south-1.amazonaws.com/kyc/689d.../passport_scan.jpg?X-Amz-Signature=...",
+    "expiresIn": 300
+  },
+  "message": "OK"
+}
+```
+
+> Unlike the PayO-style static `/kyc-docs/filename` URLs, this backend never serves a permanent public link — every document view goes through this endpoint and returns a link that expires in 300 seconds.
+
+---
+
+## 26 — Resubmit KYC
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/kyc/:kycId/resubmit/
+```
+
+### Body
+```json
+{ "notes": "Please re-upload a clearer selfie" }
+```
+
+---
+
+## 27 — KYC Stats
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/kyc/stats/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "pendingReview": 34,
+    "approvedToday": 12,
+    "rejectedToday": 3,
+    "avgReviewTimeHours": 4.2,
+    "tabCounts": { "pending": 34, "approved": 512, "rejected": 40, "resubmit": 6 }
+  },
+  "message": "OK"
+}
+```
+
+---
+
+# Wallets
+
+## 28 — List Wallets
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/wallets/?status=frozen
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "9a8b7c6d-...",
+      "owner": "0f1e2d3c-...",
+      "owner_name": "Nithin Kumar",
+      "owner_email": "nithin@gmail.com",
+      "owner_avatar": "NK",
+      "address": "0xA1B2C3D4E5F6...",
+      "network": "Ethereum",
+      "currency": "USDT",
+      "balance": "452.30000000",
+      "status": "frozen",
+      "risk_level": "high",
+      "risk_score": 78,
+      "total_in": "1200.00000000",
+      "total_out": "747.70000000",
+      "freeze_reason": "Suspicious high-frequency transfers",
+      "created_at": "2026-06-01T09:00:00Z",
+      "last_activity": "2026-07-06T14:32:00Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 29 — Freeze Wallet
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/wallets/:id/freeze/
+```
+
+### Body
+```json
+{ "reason": "Suspicious high-frequency transfers" }
+```
+
+---
+
+## 30 — Unfreeze Wallet
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/wallets/:id/unfreeze/
+```
+
+---
+
+## 31 — Wallet Risk Review
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/wallets/:id/risk_review/
+```
+
+### Body
+```json
+{ "risk_level": "high", "risk_score": 78 }
+```
+
+---
+
+## 32 — Wallet Stats
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/wallets/stats/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "totalWallets": 5230,
+    "activeWallets": 5100,
+    "frozenWallets": 130,
+    "totalBalanceUSD": 1245300.55
+  },
+  "message": "OK"
+}
+```
+
+---
+
+# Transactions
+
+## 33 — List Transactions
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/transactions/?status=pending&tx_type=Deposit
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "3e4f5a6b-...",
+      "tx_id": "TXN-4821093",
+      "user": "0f1e2d3c-...",
+      "user_name": "Nithin Kumar",
+      "user_email": "nithin@gmail.com",
+      "user_avatar": "NK",
+      "wallet": "9a8b7c6d-...",
+      "wallet_address": "0xA1B2C3D4E5F6...",
+      "tx_type": "Deposit",
+      "amount": "100.00000000",
+      "currency": "USDT",
+      "status": "pending",
+      "tx_hash": "0xdeadbeef...",
+      "network": "Ethereum",
+      "fee": "0.50000000",
+      "notes": "",
+      "flagged": false,
+      "flag_reason": "",
+      "created_at": "2026-07-06T12:00:00Z",
+      "updated_at": "2026-07-06T12:00:00Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 34 — Flag Transaction
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/transactions/:id/flag/
+```
+
+### Body
+```json
+{ "reason": "Amount inconsistent with account history" }
+```
+
+---
+
+## 35 — Unflag Transaction
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/transactions/:id/unflag/
+```
+
+---
+
+## 36 — Transaction Stats
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/transactions/stats/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "totalVolume24h": 88230.45,
+    "byType": { "Deposit": 320, "Withdrawal": 210, "Transfer": 90, "Swap": 40 },
+    "byStatus": { "completed": 590, "pending": 40, "failed": 10, "processing": 20 }
+  },
+  "message": "OK"
+}
+```
+
+---
+
+# Referrals
+
+## 37 — List Referrals
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/referrals/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "7c6b5a4d-...",
+      "referrer": "0f1e2d3c-...",
+      "referrer_email": "nithin@gmail.com",
+      "referee": "1a2b3c4d-...",
+      "referee_email": "friend@gmail.com",
+      "tier": "gold",
+      "commission": "5.00000000",
+      "paid_at": null,
+      "created_at": "2026-06-20T09:00:00Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 38 — Referral Leaderboard
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/referrals/leaderboard/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    { "user_email": "nithin@gmail.com", "referral_count": 24, "total_commission": 120.50, "tier": "diamond" }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+# Rewards
+
+## 39 — List Rewards
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/rewards/?status=pending
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "5d4c3b2a-...",
+      "user": "0f1e2d3c-...",
+      "user_name": "Nithin Kumar",
+      "user_email": "nithin@gmail.com",
+      "user_avatar": "NK",
+      "program": "8f7e6d5c-...",
+      "program_name": "Referral Bonus",
+      "amount": "10.00000000",
+      "status": "pending",
+      "approved_by": null,
+      "created_at": "2026-07-01T09:00:00Z",
+      "paid_at": null
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 40 — Approve Reward
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/rewards/:id/approve/
+```
+
+---
+
+## 41 — Reject Reward
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/rewards/:id/reject/
+```
+
+---
+
+## 42 — Pay Reward
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/rewards/:id/pay/
+```
+
+---
+
+## 43 — Approve All Pending Rewards
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/rewards/approve_all/
+```
+
+### Response
+```json
+{ "success": true, "data": { "approved_count": 18 }, "message": "18 rewards approved" }
+```
+
+---
+
+## 44 — List Reward Programs
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/rewards/programs/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "8f7e6d5c-...",
+      "name": "Referral Bonus",
+      "description": "Paid when a referred user completes KYC level 1",
+      "amount": "10.00",
+      "currency": "USDT",
+      "is_active": true,
+      "created_at": "2026-01-15T00:00:00Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+# Reports
+
+## 45 — List Reports
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/reports/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "2b3c4d5e-...",
+      "name": "July 2026 Revenue Report",
+      "report_type": "revenue",
+      "format": "xlsx",
+      "status": "ready",
+      "period": "Jul 2026",
+      "file_url": "http://localhost:8000/media/reports/july_2026_revenue.xlsx",
+      "file_size": "482KB",
+      "row_count": 5230,
+      "generated_by": "b3f1c2a0-...",
+      "generated_by_email": "admin@zoro.finance",
+      "created_at": "2026-07-06T08:00:00Z",
+      "completed_at": "2026-07-06T08:00:12Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 46 — Generate Report
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/reports/generate/
+```
+
+### Body
+```json
+{
+  "report_type": "revenue",
+  "format": "xlsx",
+  "period": "Jul 2026",
+  "date_from": "2026-07-01",
+  "date_to": "2026-07-31"
+}
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": { "id": "2b3c4d5e-...", "status": "queued" },
+  "message": "Report generation started"
+}
+```
+
+---
+
+## 47 — Download Report
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/reports/:id/download/
+```
+
+Returns the binary file (CSV / XLSX / PDF) with the appropriate `Content-Type` header — not wrapped in the JSON envelope.
+
+---
+
+# System Logs
+
+## 48 — List System Logs
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/system-logs/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "4a3b2c1d-...",
+      "log_id": "LOG-8821",
+      "actor": "b3f1c2a0-...",
+      "actor_label": "admin@zoro.finance",
+      "action": "KYC approved — nithin@gmail.com (Level 2)",
+      "category": "KYC",
+      "severity": "success",
+      "ip_address": "127.0.0.1",
+      "status_code": 200,
+      "metadata": { "kyc_request_id": "689d7f1a-...", "status": "approved" },
+      "created_at": "2026-07-06T09:15:00Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+Read-only — no create/update/delete endpoints.
+
+---
+
+# Notifications
+
+## 49 — List Notifications
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/notifications/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "1f2e3d4c-...",
+      "title": "KYC Approved",
+      "message": "Your Level 2 KYC verification has been approved.",
+      "notif_type": "success",
+      "is_read": false,
+      "link": "",
+      "created_at": "2026-07-06T09:15:01Z"
+    }
+  ],
+  "message": "OK"
+}
+```
+
+---
+
+## 50 — Mark Notification Read
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/notifications/:id/mark_read/
+```
+
+---
+
+# Dashboard
+
+## 51 — Dashboard KPIs
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/dashboard/stats/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "totalUsers": 5230,
+    "totalVolume24h": 88230.45,
+    "pendingKyc": 34,
+    "activeWallets": 5100,
+    "flaggedTransactions": 12
+  },
+  "message": "OK"
+}
+```
+
+---
+
+## 52 — Dashboard Charts
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/dashboard/charts/
+```
+
+### Response
+```json
+{
+  "success": true,
+  "data": {
+    "userGrowth": [ { "date": "2026-07-01", "count": 5190 }, { "date": "2026-07-06", "count": 5230 } ],
+    "volumeByDay": [ { "date": "2026-07-05", "volume": 80210.10 }, { "date": "2026-07-06", "volume": 88230.45 } ]
+  },
+  "message": "OK"
+}
+```
+
+---
+
+# Settings
+
+## 53 — Get Profile
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/settings/profile/
+```
+
+---
+
+## 54 — Update Profile
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/settings/profile/
+```
+
+---
+
+## 55 — Change Password
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/settings/change-password/
+```
+
+---
+
+## 56 — List Role Users
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/settings/roles/
+```
+
+---
+
+## 57 — Invite Role User
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/settings/roles/
+```
+
+---
+
+## 58 — Update Role
+
+**Method:** `PATCH`
+
+```text
+http://localhost:8000/api/v1/settings/roles/:id/
+```
+
+---
+
+## 59 — Revoke Role
+
+**Method:** `DELETE`
+
+```text
+http://localhost:8000/api/v1/settings/roles/:id/
+```
+
+---
+
+## 60 — Get Platform Config
+
+**Method:** `GET`
+
+```text
+http://localhost:8000/api/v1/settings/platform/
+```
+
+---
+
+## 61 — Update Platform Config
+
+**Method:** `POST`
+
+```text
+http://localhost:8000/api/v1/settings/platform/
+```
