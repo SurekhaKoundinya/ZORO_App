@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ../media:/app/media
+
+  celery:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: celery -A zoro_backend worker --loglevel=info
+    env_file:
+      - ../.env
+    depends_on:
+      - postgres
+      - redis
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: celery -A zoro_backend beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file:
+      - ../.env
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: zoro_db
+      POSTGRES_USER: zoro_user
+      POSTGRES_PASSWORD: your_db_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

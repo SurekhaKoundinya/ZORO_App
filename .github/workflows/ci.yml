@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: zoro_test_db
+          POSTGRES_USER: zoro_user
+          POSTGRES_PASSWORD: test_password
+        ports: ['5432:5432']
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: flake8 .
+      - run: pytest --cov=. --cov-report=xml
+        env:
+          SECRET_KEY: ci-secret-key
+          DB_NAME: zoro_test_db
+          DB_USER: zoro_user
+          DB_PASSWORD: test_password
+          DB_HOST: localhost
+          JWT_SECRET: ci-jwt-secret
+          REDIS_URL: redis://localhost:6379/0
