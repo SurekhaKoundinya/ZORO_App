@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── LIGHT (default) ─── */
+:root {
+  --gold: #FBD12D;
+  --gold-dark: #FBD12D;
+  --gold-light: #FBD12D;
+  --background: #F5F4F0;
+  --foreground: #0A0A0A;
+  --card-bg: #FFFFFF;
+  --card-hover: #FAFAF8;
+  --border: #E8E6DF;
+  --border-soft: #F0EDE6;
+  --muted: #8A8680;
+  --muted-light: #B8B4AE;
+  --sidebar-bg: #FFFFFF;
+  --topbar-bg: rgba(255,255,255,0.9);
+  --input-bg: #F8F7F4;
+  --shadow-color: rgba(0,0,0,0.06);
+  --shadow-gold: rgba(251,209,45,0.18);
+}
+
+/* ─── DARK ─── */
+.dark {
+  --background: #0A0A0A;
+  --foreground: #FAFAFA;
+  --card-bg: #111111;
+  --card-hover: #161616;
+  --border: #1F1F1F;
+  --border-soft: #191919;
+  --muted: #6B6760;
+  --muted-light: #4A4744;
+  --sidebar-bg: #0D0D0D;
+  --topbar-bg: rgba(10,10,10,0.9);
+  --input-bg: #161616;
+  --shadow-color: rgba(0,0,0,0.4);
+  --shadow-gold: rgba(251,209,45,0.12);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(251,209,45,0.25);
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(251,209,45,0.45); }
+
+/* ── Premium card ── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  box-shadow: 0 1px 4px var(--shadow-color), 0 0 0 0 transparent;
+}
+.card:hover {
+  box-shadow: 0 6px 32px var(--shadow-color), 0 0 16px var(--shadow-gold);
+  transform: translateY(-1px);
+}
+
+/* ── Gold gradient text ── */
+.gold-text {
+  background: linear-gradient(135deg, #FBD12D 0%, #FBD12D 40%, #FBD12D 70%, #FBD12D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gold button ── */
+.btn-gold {
+  background: linear-gradient(135deg, #FBD12D 0%, #FBD12D 100%);
+  color: #000;
+  font-weight: 700;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(251,209,45,0.35);
+}
+.btn-gold:hover {
+  box-shadow: 0 6px 24px rgba(251,209,45,0.5);
+  transform: translateY(-1px);
+}
+
+/* ── Glass morphism ── */
+.glass {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+.dark .glass {
+  background: rgba(15,15,15,0.7);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.glass-gold {
+  background: rgba(251,209,45,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(251,209,45,0.18);
+}
+
+/* ── Status badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ── Gold accent line ── */
+.gold-line {
+  background: linear-gradient(90deg, #FBD12D, #FBD12D, #FBD12D);
+  height: 2px;
+  border-radius: 2px;
+}
+
+/* ── Recharts ── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--border);
+}
+.recharts-tooltip-wrapper { border-radius: 16px !important; overflow: hidden; }
+
+/* ── Inputs ── */
+input, select, textarea {
+  background: var(--input-bg);
+  color: var(--foreground);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: rgba(251,209,45,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(251,209,45,0.1);
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* ── Black hero section (light mode) ── */
+.hero-black {
+  background: #0A0A0A;
+  color: #FFFFFF;
+}
+
+/* ── Premium stats card accent ── */
+.stat-card-gold {
+  background: linear-gradient(135deg, #FBD12D 0%, #FBD12D 100%);
+  color: #000;
+  border: none;
+}

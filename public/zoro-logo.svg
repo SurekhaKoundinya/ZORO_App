@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 300" fill="none">
+  <defs>
+    <!-- Gold metallic gradients -->
+    <linearGradient id="goldRing" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%"   stop-color="#f0d060"/>
+      <stop offset="25%"  stop-color="#FBD12D"/>
+      <stop offset="50%"  stop-color="#c89010"/>
+      <stop offset="75%"  stop-color="#FBD12D"/>
+      <stop offset="100%" stop-color="#9a7000"/>
+    </linearGradient>
+    <linearGradient id="goldZ" x1="0%" y1="0%" x2="40%" y2="100%">
+      <stop offset="0%"   stop-color="#f5e080"/>
+      <stop offset="30%"  stop-color="#FBD12D"/>
+      <stop offset="60%"  stop-color="#b08010"/>
+      <stop offset="100%" stop-color="#7a5800"/>
+    </linearGradient>
+    <linearGradient id="greenArrow" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#1a6b20"/>
+      <stop offset="40%"  stop-color="#2ea840"/>
+      <stop offset="100%" stop-color="#5edd70"/>
+    </linearGradient>
+    <linearGradient id="greenBar1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ecb60"/>
+      <stop offset="100%" stop-color="#1a6020"/>
+    </linearGradient>
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#f0d060"/>
+      <stop offset="40%"  stop-color="#FBD12D"/>
+      <stop offset="100%" stop-color="#8a6400"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.35)"/>
+    </filter>
+    <filter id="zShadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.4)"/>
+    </filter>
+  </defs>
+
+  <!-- ── GOLD CIRCLE RING ── -->
+  <!-- Main ring arc (gap at bottom-left where arrow exits and top-right where arrow enters) -->
+  <circle cx="130" cy="125" r="88" stroke="url(#goldRing)" stroke-width="11"
+    stroke-linecap="round" fill="none"
+    stroke-dasharray="490 62"
+    stroke-dashoffset="30"
+    filter="url(#shadow)"
+    transform="rotate(-10 130 125)"/>
+
+  <!-- ── BOLD GOLD Z ── -->
+  <text x="130" y="162"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="112"
+    font-weight="900"
+    text-anchor="middle"
+    fill="url(#goldZ)"
+    filter="url(#zShadow)"
+    letter-spacing="-2">Z</text>
+
+  <!-- ── GREEN ARROW + BAR CHART ── -->
+  <!-- Curved arrow body (thick diagonal sweep bottom-left to top-right) -->
+  <!-- Arrow shaft as a thick curved path -->
+  <path d="M 60 168 Q 90 155 120 130 Q 150 105 182 66"
+    stroke="url(#greenArrow)" stroke-width="18" stroke-linecap="round" fill="none"
+    filter="url(#shadow)"/>
+  <!-- Arrow head -->
+  <polygon points="182,66 160,68 175,88"
+    fill="#4ecb60" filter="url(#shadow)"/>
+  <!-- Bevel highlight on arrow -->
+  <path d="M 64 162 Q 94 149 124 124 Q 152 100 180 64"
+    stroke="rgba(255,255,255,0.18)" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+  <!-- Bar chart bars (5 bars, ascending, inside/below the arrow) -->
+  <rect x="83"  y="152" width="10" height="18" rx="2" fill="url(#greenBar1)" opacity="0.92"/>
+  <rect x="99"  y="141" width="10" height="29" rx="2" fill="url(#greenBar1)" opacity="0.92"/>
+  <rect x="115" y="128" width="10" height="42" rx="2" fill="url(#greenBar1)" opacity="0.92"/>
+  <rect x="131" y="114" width="10" height="56" rx="2" fill="url(#greenBar1)" opacity="0.92"/>
+  <rect x="147" y="100" width="10" height="70" rx="2" fill="url(#greenBar1)" opacity="0.92"/>
+
+  <!-- ── "zoro" WORDMARK ── -->
+  <text x="130" y="232"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="46"
+    font-weight="700"
+    text-anchor="middle"
+    fill="url(#goldText)"
+    filter="url(#zShadow)"
+    letter-spacing="3">zoro</text>
+
+  <!-- ── DECORATIVE DIVIDER ── -->
+  <line x1="52" y1="248" x2="118" y2="248" stroke="url(#goldText)" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="130" cy="248" r="3" fill="#2ea840"/>
+  <line x1="142" y1="248" x2="208" y2="248" stroke="url(#goldText)" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- ── "GROW HIGH" TAGLINE ── -->
+  <text x="130" y="272"
+    font-family="'Arial', sans-serif"
+    font-size="13"
+    font-weight="600"
+    text-anchor="middle"
+    fill="#b09030"
+    letter-spacing="5">GROW HIGH</text>
+</svg>
