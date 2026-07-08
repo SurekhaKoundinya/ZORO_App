@@ -3,7 +3,7 @@ name: Frontend APK Pipeline
 on:
   push:
     branches:
-      - ZORO_App
+      - zoro_app
   workflow_dispatch:
  
 jobs:
