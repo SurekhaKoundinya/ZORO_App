@@ -1,0 +1,73 @@
+name: Frontend APK Pipeline
+ 
+on:
+  push:
+    branches:
+      - ZORO_App
+  workflow_dispatch:
+ 
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      # Checkout Repository
+      - name: Checkout
+        uses: actions/checkout@v4
+ 
+      # Setup Node.js (LTS)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+ 
+      # Setup Java 17
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+ 
+      # Install Android SDK (API 34)
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+ 
+      - name: Install Android SDK Packages
+        run: |
+          sdkmanager "platform-tools"
+          sdkmanager "platforms;android-34"
+          sdkmanager "build-tools;34.0.0"
+          sdkmanager --licenses
+ 
+      # Install Node Dependencies
+      - name: Install Dependencies
+        run: npm install
+ 
+      # Give execute permission to Gradle wrapper
+      - name: Grant Gradle Permission
+        run: chmod +x android/gradlew
+ 
+      # Build Release APK
+      - name: Build Release APK
+        run: |
+          cd android
+          ./gradlew assembleRelease
+ 
+      # Upload APK
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zoro-release-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 7
+ 
+      # Success Message
+      - name: Success Message
+        run: |
+          echo "=================================="
+          echo "APK Build Successful!"
+          echo "Artifact Name: zoro-release-apk-${{ github.run_number }}"
+          echo "Download from:"
+          echo "GitHub Repository -> Actions -> Latest Workflow Run -> Artifacts"
+          echo "=================================="
