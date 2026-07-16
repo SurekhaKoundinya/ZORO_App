@@ -1,3 +1,4 @@
+import secrets
 from rest_framework import serializers
 from .models import User
 
@@ -45,10 +46,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
     def create(self, validated_data):
+        from apps.wallets.models import Wallet
+
         password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
         user.save()
+        # every user gets a default wallet with the model's default $100 balance
+        Wallet.objects.create(owner=user, address='0x' + secrets.token_hex(20))
         return user
 
 

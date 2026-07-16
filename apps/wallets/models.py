@@ -23,7 +23,7 @@ class Wallet(models.Model):
     address      = models.CharField(max_length=200, unique=True)
     network      = models.CharField(max_length=30, choices=NETWORKS, default='Ethereum')
     currency     = models.CharField(max_length=10, choices=CURRENCIES, default='USDT')
-    balance      = models.DecimalField(max_digits=30, decimal_places=8, default=0)
+    balance      = models.DecimalField(max_digits=30, decimal_places=8, default=100)  # ponytail: every new wallet starts with a $100 demo balance (no real funding flow yet)
     status       = models.CharField(max_length=20, choices=STATUS, default='active')
     risk_level   = models.CharField(max_length=20, choices=RISK, default='low')
     risk_score   = models.IntegerField(default=0)

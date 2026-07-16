@@ -33,6 +33,6 @@ def provision_app_user(phone):
 
         Wallet.objects.create(
             owner=user, address=generate_zor_address(),
-            network='Zoro', currency='ZOR', balance=0,
+            network='Zoro', currency='ZOR',
         )
     return user

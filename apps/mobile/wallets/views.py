@@ -17,7 +17,7 @@ def get_or_create_zor_wallet(user):
     if wallet:
         return wallet
     return Wallet.objects.create(
-        owner=user, address=generate_zor_address(), network='Zoro', currency='ZOR', balance=0,
+        owner=user, address=generate_zor_address(), network='Zoro', currency='ZOR',
     )
 
 
