@@ -1,0 +1,25 @@
+.git
+.github
+.gitignore
+
+# Secrets — never bake these into an image layer
+.env
+.env.*
+!.env.example
+
+# Local/dev-only
+venv3/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# Large / irrelevant to the image
+backup.dump
+media/
+staticfiles/
+API Commands/
+README.md
+PROJECT_STRUCTURE.md
