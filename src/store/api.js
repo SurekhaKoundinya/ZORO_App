@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // ponytail: free ngrok URLs change every time the tunnel restarts — update
 // this constant (or call configureApiBaseUrl() at app startup) whenever
 // that happens. A reserved/paid ngrok domain would make this permanent.
-let BASE_URL = "https://calculate-gurgling-passport.ngrok-free.dev/api/v1";
+let BASE_URL = "https://flatware-malformed-repeal.ngrok-free.dev";
 
 export function configureApiBaseUrl(url) {
   BASE_URL = url.replace(/\/$/, "");
